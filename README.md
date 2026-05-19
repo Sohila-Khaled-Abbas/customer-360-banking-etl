@@ -394,6 +394,7 @@ Full parameter reference: [`iics/connections/Connection_Specs.md`](iics/connecti
 
 | Document | Description | Link |
 |----------|-------------|------|
+| 📊 Project Presentation | Executive overview and pipeline architecture presentation | [View Presentation](https://yorwjbzc.gensparkspace.com/) |
 | 📋 Business Requirements | Functional specs, exception rules, acceptance criteria | [BRD.pdf](docs/Business_Requirements_Document.pdf) |
 | 📖 Data Dictionary | Column-level definitions for all source and target tables | [Data_Dictionary.pdf](docs/Data_Dictionary.pdf) |
 | 🗺️ Mapping Blueprint | Full 6-phase IICS mapping technical specification | [M_Customer_360_ETL.md](iics/mappings/M_Customer_360_ETL.md) |

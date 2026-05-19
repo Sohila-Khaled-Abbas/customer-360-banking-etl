@@ -58,6 +58,15 @@ A regional Egyptian bank operates across **five governorates** with transactiona
 
 ## 🏗️ Architecture Overview
 
+<div align="center">
+
+![Customer 360 ETL Pipeline — Architecture Diagram](assets/architecture_diagram.png)
+
+</div>
+
+<details>
+<summary>📄 View text-based architecture diagram</summary>
+
 ```
 ╔══════════════════════════════════════════════════════════════╗
 ║                      SOURCE LAYER                           ║
@@ -108,6 +117,8 @@ A regional Egyptian bank operates across **five governorates** with transactiona
 ║   TGT_CUSTOMER_360   ← UPSERT on CUST_ID                    ║
 ╚══════════════════════════════════════════════════════════════╝
 ```
+
+</details>
 
 ---
 

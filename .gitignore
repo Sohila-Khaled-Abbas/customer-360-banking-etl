@@ -1,0 +1,41 @@
+# Environment & Credentials
+*.env
+.env.*
+credentials.json
+secrets.yaml
+*.key
+*.pem
+
+# IICS exported asset bundles (binary / proprietary format)
+*.zip
+*.iar
+
+# OS artifacts
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE configs
+.vscode/
+.idea/
+*.iml
+
+# Python (if any utility scripts are added)
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+venv/
+*.egg-info/
+
+# Jupyter notebooks checkpoints
+.ipynb_checkpoints/
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.bak
+~$*

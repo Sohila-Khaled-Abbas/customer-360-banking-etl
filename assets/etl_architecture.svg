@@ -1,24 +1,25 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" style="background-color:#0D1117; font-family:'Segoe UI', Arial, sans-serif;">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2050 900" width="2050" height="900" style="background-color:#0D1117; font-family:'Segoe UI', Arial, sans-serif;">
   <defs>
     <style>
       .bg { fill: #0D1117; }
       .zone-bg { fill: #161b22; stroke: #30363d; stroke-width: 2; rx: 10; }
-      .zone-title { fill: #8b949e; font-size: 16px; font-weight: bold; letter-spacing: 2px; }
+      .zone-title { fill: #8b949e; font-size: 15px; font-weight: bold; letter-spacing: 2px; }
       
       .box { fill: #21262d; stroke: #30363d; stroke-width: 2; rx: 6; }
       .box-oracle { stroke: #f85149; }
       .box-csv { stroke: #2ea043; }
       .box-jnr { stroke: #a371f7; }
       .box-mplt { stroke: #3fb950; }
+      .box-lkp { stroke: #58a6ff; }
       .box-agg { stroke: #d2a8ff; }
       .box-rtr { stroke: #e3b341; }
       .box-exp { stroke: #79c0ff; }
       .box-tgt { stroke: #56d364; stroke-width: 3; }
       .box-err { stroke: #f85149; stroke-width: 2; stroke-dasharray: 4; }
       
-      .text-title { fill: #c9d1d9; font-size: 16px; font-weight: bold; }
-      .text-desc { fill: #8b949e; font-family: 'Consolas', monospace; font-size: 13px; }
-      .text-small { fill: #8b949e; font-family: 'Consolas', monospace; font-size: 11px; }
+      .text-title { fill: #c9d1d9; font-size: 14px; font-weight: bold; }
+      .text-desc { fill: #8b949e; font-family: 'Consolas', monospace; font-size: 12px; }
+      .text-small { fill: #8b949e; font-family: 'Consolas', monospace; font-size: 10px; }
       
       .arrow { stroke: #58a6ff; stroke-width: 3; fill: none; marker-end: url(#arrowhead); }
       .arrow-err { stroke: #f85149; stroke-width: 3; stroke-dasharray: 5,5; fill: none; marker-end: url(#arrowhead-err); }
@@ -36,159 +37,181 @@
   </defs>
 
   <!-- Background -->
-  <rect class="bg" width="1600" height="900" />
+  <rect class="bg" width="2050" height="900" />
   
   <!-- Zones -->
-  <!-- 1. Source -->
-  <rect class="zone-bg" x="30" y="50" width="280" height="800" />
-  <text class="zone-title" x="170" y="80" text-anchor="middle">1. SOURCE LAYER</text>
+  <!-- 1. Reference Stream -->
+  <rect class="zone-bg" x="20" y="30" width="660" height="320" />
+  <text class="zone-title" x="350" y="55" text-anchor="middle">1. REFERENCE DATA STREAM</text>
   
-  <!-- 2. Integration -->
-  <rect class="zone-bg" x="340" y="50" width="280" height="800" />
-  <text class="zone-title" x="480" y="80" text-anchor="middle">2. INTEGRATION</text>
+  <!-- 2. ATM Stream -->
+  <rect class="zone-bg" x="20" y="370" width="1310" height="150" />
+  <text class="zone-title" x="675" y="395" text-anchor="middle">2. ATM COMPLIANCE &amp; AGGREGATION</text>
   
-  <!-- 3. Exception Matrix -->
-  <rect class="zone-bg" x="650" y="50" width="320" height="800" />
-  <text class="zone-title" x="810" y="80" text-anchor="middle">3. EXCEPTION MATRIX</text>
+  <!-- 3. CC Stream -->
+  <rect class="zone-bg" x="20" y="650" width="880" height="230" />
+  <text class="zone-title" x="460" y="675" text-anchor="middle">3. CREDIT CARD SPEND &amp; QUALITY</text>
   
-  <!-- 4. Aggregation -->
-  <rect class="zone-bg" x="1000" y="50" width="280" height="800" />
-  <text class="zone-title" x="1140" y="80" text-anchor="middle">4. AGGREGATION</text>
-  
-  <!-- 5. Target -->
-  <rect class="zone-bg" x="1310" y="50" width="260" height="800" />
-  <text class="zone-title" x="1440" y="80" text-anchor="middle">5. TARGET LAYER</text>
+  <!-- 4. Assembly & Target -->
+  <rect class="zone-bg" x="1340" y="160" width="680" height="450" />
+  <text class="zone-title" x="1680" y="185" text-anchor="middle">4. GOLDEN RECORD ASSEMBLY</text>
 
-  <!-- ZONE 1 BOXES -->
-  <text class="text-title" x="170" y="130" text-anchor="middle" fill="#f85149">ORACLE DATABASE</text>
-  
-  <rect class="box box-oracle" x="50" y="150" width="240" height="50" />
-  <text class="text-title" x="170" y="175" text-anchor="middle">SRC_BRANCHES</text>
-  <text class="text-desc" x="170" y="190" text-anchor="middle">4 branches</text>
+  <!-- 5. Audit Log -->
+  <rect class="zone-bg" x="890" y="540" width="240" height="90" />
+  <text class="zone-title" x="1010" y="560" text-anchor="middle" fill="#f85149">AUDIT LOG</text>
 
-  <rect class="box box-oracle" x="50" y="220" width="240" height="50" />
-  <text class="text-title" x="170" y="245" text-anchor="middle">SRC_ACCOUNTS</text>
-  <text class="text-desc" x="170" y="260" text-anchor="middle">22 accounts</text>
+  <!-- PATHS -->
+  <path d="M 220 105 C 240 105, 240 105, 260 105" class="arrow" />
+  <path d="M 220 205 C 240 205, 240 255, 260 255" class="arrow" />
+  <path d="M 220 305 C 240 305, 240 275, 260 275" class="arrow" />
+  <path d="M 440 105 C 460 105, 460 170, 480 170" class="arrow" />
+  <path d="M 440 255 C 460 255, 460 195, 480 195" class="arrow" />
 
-  <rect class="box box-oracle" x="50" y="290" width="240" height="50" />
-  <text class="text-title" x="170" y="315" text-anchor="middle">SRC_CUSTOMERS</text>
-  <text class="text-desc" x="170" y="330" text-anchor="middle">15 customers</text>
-  
-  <line x1="50" y1="360" x2="290" y2="360" stroke="#30363d" stroke-width="2" />
-  
-  <text class="text-title" x="170" y="390" text-anchor="middle" fill="#2ea043">FLAT FILES (CSV)</text>
-  
-  <rect class="box box-csv" x="50" y="410" width="240" height="70" />
-  <text class="text-title" x="170" y="435" text-anchor="middle">ATM_Txn_*.csv</text>
-  <text class="text-desc" x="170" y="455" text-anchor="middle">Alex, Cairo, Giza</text>
-  <text class="text-small" x="170" y="470" text-anchor="middle">Daily extracts, mixed formats</text>
+  <path d="M 220 445 C 240 445, 240 445, 260 445" class="arrow" />
+  <path d="M 440 445 C 460 445, 460 445, 480 445" class="arrow" />
+  <path d="M 660 445 C 680 445, 680 445, 700 445" class="arrow" />
 
-  <rect class="box box-csv" x="50" y="500" width="240" height="70" />
-  <text class="text-title" x="170" y="525" text-anchor="middle">CC_Spend_*.csv</text>
-  <text class="text-desc" x="170" y="545" text-anchor="middle">2023, 2024, 2025</text>
-  <text class="text-small" x="170" y="560" text-anchor="middle">Quarterly Q1-Q4 spends</text>
+  <path d="M 880 435 C 900 435, 900 405, 920 405" class="arrow-clean" />
+  <path d="M 880 465 C 900 465, 900 585, 920 585" class="arrow-err" />
+  <path d="M 1100 405 C 1120 405, 1120 405, 1140 405" class="arrow" />
 
+  <path d="M 220 725 C 240 725, 240 725, 260 725" class="arrow" />
+  <path d="M 440 715 C 460 715, 460 725, 480 725" class="arrow-clean" />
+  <path d="M 440 745 C 460 745, 460 825, 480 825" class="arrow-err" />
+  <path d="M 660 725 C 680 725, 680 725, 700 725" class="arrow" />
+  <path d="M 660 825 C 790 825, 790 605, 920 605" class="arrow" />
 
-  <!-- ZONE 2 BOXES -->
-  <rect class="box box-jnr" x="360" y="200" width="240" height="60" />
-  <text class="text-title" x="480" y="225" text-anchor="middle">JNR: Accounts &amp; Branches</text>
-  <text class="text-desc" x="480" y="245" text-anchor="middle">Join on BRANCH_ID</text>
+  <path d="M 1320 405 C 1340 405, 1340 555, 1360 555" class="arrow" />
+  <path d="M 880 725 C 1120 725, 1120 585, 1360 585" class="arrow" />
 
-  <rect class="box box-jnr" x="360" y="290" width="240" height="60" />
-  <text class="text-title" x="480" y="315" text-anchor="middle">JNR: Main Integration</text>
-  <text class="text-desc" x="480" y="335" text-anchor="middle">Join Customers on CUST_ID</text>
+  <path d="M 660 180 C 1120 180, 1120 355, 1580 355" class="arrow" />
+  <path d="M 1540 570 C 1560 570, 1560 385, 1580 385" class="arrow" />
 
-  <rect class="box box-mplt" x="360" y="380" width="240" height="60" />
-  <text class="text-title" x="480" y="405" text-anchor="middle">MPLT_Cleanse_Name</text>
-  <text class="text-small" x="480" y="425" text-anchor="middle">LTRIM(RTRIM(REG_REPLACE(...)))</text>
-
-  <rect class="box box-agg" x="360" y="470" width="240" height="60" />
-  <text class="text-title" x="480" y="495" text-anchor="middle">AGG: Debit Card Count</text>
-  <text class="text-desc" x="480" y="515" text-anchor="middle">Group by CUST_ID</text>
-
-  <rect class="box box-jnr" x="360" y="560" width="240" height="60" />
-  <text class="text-title" x="480" y="585" text-anchor="middle">JNR: Count Back</text>
-  <text class="text-desc" x="480" y="605" text-anchor="middle">Rejoin count to pipeline</text>
+  <path d="M 1760 370 C 1780 370, 1780 370, 1800 370" class="arrow" />
+  <path d="M 1890 345 L 1890 270" class="arrow" />
 
 
-  <!-- ZONE 3 BOXES -->
-  <rect class="box box-rtr" x="670" y="250" width="280" height="230" />
-  <text class="text-title" x="810" y="280" text-anchor="middle" fill="#e3b341">RTR: EXCEPTION MATRIX</text>
-  <line x1="670" y1="295" x2="950" y2="295" stroke="#30363d" stroke-width="2" />
-  
-  <text class="text-desc" x="685" y="325" text-anchor="start" fill="#f85149">Group 1: ISNULL(CUST_ID)</text>
-  <text class="text-desc" x="685" y="365" text-anchor="start" fill="#f85149">Group 2: STATUS='SUSPENDED'</text>
-  <text class="text-desc" x="685" y="405" text-anchor="start" fill="#f85149">Group 3: DEBIT_COUNT &gt; 1</text>
-  <line x1="670" y1="430" x2="950" y2="430" stroke="#30363d" stroke-width="2" />
-  <text class="text-desc" x="685" y="460" text-anchor="start" fill="#3fb950">Default: Clean Records</text>
+  <!-- BOXES -->
+  <!-- TRACK 1 -->
+  <g class="node">
+    <rect class="box box-oracle" x="40" y="80" width="180" height="50"/>
+    <text class="text-title" x="130" y="102" text-anchor="middle">SRC_CUSTOMERS</text>
+    <text class="text-desc" x="130" y="120" text-anchor="middle">Oracle DB</text>
+  </g>
+  <g class="node">
+    <rect class="box box-oracle" x="40" y="180" width="180" height="50"/>
+    <text class="text-title" x="130" y="202" text-anchor="middle">SRC_ACCOUNTS</text>
+    <text class="text-desc" x="130" y="220" text-anchor="middle">Oracle DB</text>
+  </g>
+  <g class="node">
+    <rect class="box box-oracle" x="40" y="280" width="180" height="50"/>
+    <text class="text-title" x="130" y="302" text-anchor="middle">SRC_BRANCHES</text>
+    <text class="text-desc" x="130" y="320" text-anchor="middle">Oracle DB</text>
+  </g>
+  <g class="node">
+    <rect class="box box-mplt" x="260" y="80" width="180" height="50"/>
+    <text class="text-title" x="350" y="102" text-anchor="middle">MPLT_Cus_Name</text>
+    <text class="text-small" x="350" y="120" text-anchor="middle">Cleanse Full Name</text>
+  </g>
+  <g class="node">
+    <rect class="box box-jnr" x="260" y="230" width="180" height="50"/>
+    <text class="text-title" x="350" y="252" text-anchor="middle">JNR_Acct_Branch</text>
+    <text class="text-small" x="350" y="270" text-anchor="middle">Join Acct + Branch</text>
+  </g>
+  <g class="node">
+    <rect class="box box-jnr" x="480" y="155" width="180" height="50"/>
+    <text class="text-title" x="570" y="177" text-anchor="middle">JNR_Master_Ref</text>
+    <text class="text-small" x="570" y="195" text-anchor="middle">Master Reference Data</text>
+  </g>
 
-  <rect class="box box-err" x="690" y="600" width="240" height="100" />
-  <text class="text-title" x="810" y="630" text-anchor="middle" fill="#f85149">TGT_EXCEPTION_LOG</text>
-  <text class="text-small" x="810" y="650" text-anchor="middle">Audit Table (Insert Only)</text>
-  <text class="text-small" x="810" y="670" text-anchor="middle">Records MISSING_PK,</text>
-  <text class="text-small" x="810" y="685" text-anchor="middle">SUSPENDED_ACCOUNT_TXN,</text>
-  <text class="text-small" x="810" y="700" text-anchor="middle">DEBIT_LIMIT_EXCEEDED</text>
+  <!-- TRACK 2 -->
+  <g class="node">
+    <rect class="box box-csv" x="40" y="420" width="180" height="50"/>
+    <text class="text-title" x="130" y="442" text-anchor="middle">SRC_ATM_Regional</text>
+    <text class="text-desc" x="130" y="460" text-anchor="middle">ATM Flat Files</text>
+  </g>
+  <g class="node">
+    <rect class="box box-lkp" x="260" y="420" width="180" height="50"/>
+    <text class="text-title" x="350" y="442" text-anchor="middle">LKP_Account_Master</text>
+    <text class="text-small" x="350" y="460" text-anchor="middle">Verify Account ID</text>
+  </g>
+  <g class="node">
+    <rect class="box box-lkp" x="480" y="420" width="180" height="50"/>
+    <text class="text-title" x="570" y="442" text-anchor="middle">LKP_Cust_Compliance</text>
+    <text class="text-small" x="570" y="460" text-anchor="middle">Check Suspend/Blacklist</text>
+  </g>
+  <g class="node">
+    <rect class="box box-rtr" x="700" y="420" width="180" height="60"/>
+    <text class="text-title" x="790" y="442" text-anchor="middle">RTR_ATM_Compliance</text>
+    <text class="text-small" x="790" y="458" text-anchor="middle">Rule: Suspended/Blacklist</text>
+    <text class="text-small" x="790" y="470" text-anchor="middle">Rule: Debit Limit</text>
+  </g>
+  <g class="node">
+    <rect class="box box-exp" x="920" y="380" width="180" height="50"/>
+    <text class="text-title" x="1010" y="402" text-anchor="middle">EXP_Cast_ATM</text>
+    <text class="text-small" x="1010" y="420" text-anchor="middle">Safe Cast to Decimal</text>
+  </g>
+  <g class="node">
+    <rect class="box box-agg" x="1140" y="380" width="180" height="50"/>
+    <text class="text-title" x="1230" y="402" text-anchor="middle">AGG_Clean_ATM_Total</text>
+    <text class="text-small" x="1230" y="420" text-anchor="middle">SUM(ATM) per CUST_ID</text>
+  </g>
 
+  <!-- TRACK 3 -->
+  <g class="node">
+    <rect class="box box-csv" x="40" y="700" width="180" height="50"/>
+    <text class="text-title" x="130" y="722" text-anchor="middle">CC_Spend_2025...</text>
+    <text class="text-desc" x="130" y="740" text-anchor="middle">CC Flat Files</text>
+  </g>
+  <g class="node">
+    <rect class="box box-rtr" x="260" y="700" width="180" height="50"/>
+    <text class="text-title" x="350" y="722" text-anchor="middle">RTR_CC_Missing_PK</text>
+    <text class="text-small" x="350" y="740" text-anchor="middle">Rule: ISNULL(CUST_ID)</text>
+  </g>
+  <g class="node">
+    <rect class="box box-exp" x="480" y="700" width="180" height="50"/>
+    <text class="text-title" x="570" y="722" text-anchor="middle">EXP_Cast_Spend</text>
+    <text class="text-small" x="570" y="740" text-anchor="middle">Cast Q1-Q4 Metrics</text>
+  </g>
+  <g class="node">
+    <rect class="box box-agg" x="700" y="700" width="180" height="50"/>
+    <text class="text-title" x="790" y="722" text-anchor="middle">AGG_CC_Spend_All</text>
+    <text class="text-small" x="790" y="740" text-anchor="middle">SUM(Q1..Q4) per CUST</text>
+  </g>
+  <g class="node">
+    <rect class="box box-exp" x="480" y="800" width="180" height="50"/>
+    <text class="text-title" x="570" y="822" text-anchor="middle">EXP_Hardcode_PK</text>
+    <text class="text-small" x="570" y="840" text-anchor="middle">Set 'MISSING_PK' string</text>
+  </g>
 
-  <!-- ZONE 4 BOXES -->
-  <rect class="box box-agg" x="1020" y="360" width="240" height="100" />
-  <text class="text-title" x="1140" y="390" text-anchor="middle">AGG: Golden Record</text>
-  <text class="text-desc" x="1140" y="415" text-anchor="middle">Group by CUST_ID</text>
-  <text class="text-small" x="1140" y="435" text-anchor="middle">SUM(ATM) -&gt; TOTAL_ATM_AMOUNT</text>
-  <text class="text-small" x="1140" y="450" text-anchor="middle">SUM(Q1..Q4) -&gt; TOTAL_CC_SPEND</text>
+  <!-- ERR LOG -->
+  <g class="node">
+    <rect class="box box-err" x="920" y="570" width="180" height="50"/>
+    <text class="text-title" x="1010" y="592" text-anchor="middle" fill="#f85149">TGT_EXCEPTION_LOG</text>
+    <text class="text-small" x="1010" y="610" text-anchor="middle">Insert Only</text>
+  </g>
 
-  <rect class="box box-exp" x="1020" y="500" width="240" height="80" />
-  <text class="text-title" x="1140" y="530" text-anchor="middle">EXP: Peak Quarter</text>
-  <text class="text-desc" x="1140" y="555" text-anchor="middle">Two-Pass DECODE logic</text>
-  <text class="text-small" x="1140" y="570" text-anchor="middle">Outputs 'Q1', 'Q2', 'Q3', 'Q4'</text>
-
-
-  <!-- ZONE 5 BOXES -->
-  <rect class="box box-tgt" x="1330" y="380" width="220" height="140" />
-  <text class="text-title" x="1440" y="420" text-anchor="middle" fill="#56d364">TGT_CUSTOMER_360</text>
-  <line x1="1330" y1="440" x2="1550" y2="440" stroke="#30363d" stroke-width="2" />
-  <text class="text-desc" x="1440" y="470" text-anchor="middle">Operation: UPSERT</text>
-  <text class="text-desc" x="1440" y="490" text-anchor="middle">Match Key: CUST_ID</text>
-  <text class="text-small" x="1440" y="510" text-anchor="middle" fill="#56d364">✓ Golden Record Table</text>
-
-
-  <!-- CONNECTIONS (ARROWS) -->
-  
-  <!-- Zone 1 to Zone 2 -->
-  <path d="M 290 175 C 325 175, 325 215, 350 215" class="arrow" />
-  <path d="M 290 245 C 325 245, 325 230, 350 230" class="arrow" />
-  
-  <!-- Changed JNR Main arrow because the previous path didn't look right: -->
-  <!-- We want an arrow coming from JNR Accounts & Branches down to JNR Main -->
-  <path d="M 480 260 L 480 280" class="arrow" />
-  
-  <!-- Flat files to MPLT_Cleanse_Name -->
-  <path d="M 290 445 C 320 445, 320 410, 350 410" class="arrow" />
-  <path d="M 290 535 C 310 535, 310 410, 350 410" class="arrow" />
-  
-  <!-- Customers to JNR Main -->
-  <path d="M 290 315 L 350 315" class="arrow" />
-
-  <!-- Flow within Zone 2 -->
-  <path d="M 480 350 L 480 370" class="arrow" />
-  <path d="M 480 440 L 480 460" class="arrow" />
-  <path d="M 480 530 L 480 550" class="arrow" />
-
-  <!-- Zone 2 to Zone 3 -->
-  <path d="M 600 590 C 630 590, 630 365, 660 365" class="arrow" />
-
-  <!-- Zone 3 to Zone 3 (Exceptions) -->
-  <path d="M 950 320 C 970 320, 970 630, 940 630" class="arrow-err" />
-  <path d="M 950 360 C 980 360, 980 650, 940 650" class="arrow-err" />
-  <path d="M 950 400 C 990 400, 990 670, 940 670" class="arrow-err" />
-
-  <!-- Zone 3 to Zone 4 (Clean) -->
-  <path d="M 950 455 C 990 455, 990 410, 1010 410" class="arrow-clean" />
-
-  <!-- Zone 4 within -->
-  <path d="M 1140 460 L 1140 490" class="arrow" />
-
-  <!-- Zone 4 to Target -->
-  <path d="M 1260 540 C 1295 540, 1295 450, 1320 450" class="arrow" />
+  <!-- INTEGRATION & TARGET -->
+  <g class="node">
+    <rect class="box box-jnr" x="1360" y="540" width="180" height="50"/>
+    <text class="text-title" x="1450" y="562" text-anchor="middle">JNR_ATM_CC</text>
+    <text class="text-small" x="1450" y="580" text-anchor="middle">Join Aggregated Totals</text>
+  </g>
+  <g class="node">
+    <rect class="box box-jnr" x="1580" y="340" width="180" height="60"/>
+    <text class="text-title" x="1670" y="362" text-anchor="middle">JNR_Final_Master</text>
+    <text class="text-small" x="1670" y="378" text-anchor="middle">Join Master Ref (P1) +</text>
+    <text class="text-small" x="1670" y="390" text-anchor="middle">Aggregated Txns (P4)</text>
+  </g>
+  <g class="node">
+    <rect class="box box-exp" x="1800" y="345" width="180" height="50"/>
+    <text class="text-title" x="1890" y="367" text-anchor="middle">EXP_Golden_Metrics</text>
+    <text class="text-small" x="1890" y="385" text-anchor="middle">Calc Wallet &amp; Peak Qtr</text>
+  </g>
+  <g class="node">
+    <rect class="box box-tgt" x="1800" y="210" width="180" height="60"/>
+    <text class="text-title" x="1890" y="235" text-anchor="middle" fill="#56d364">TGT_CUSTOMER_360</text>
+    <text class="text-small" x="1890" y="255" text-anchor="middle">UPSERT</text>
+  </g>
 
 </svg>

@@ -167,95 +167,71 @@ customer-360-banking-etl/
 ## 🔄 Pipeline Phases
 
 <details>
-<summary><strong>Phase 1 — Connection & Mapplet Architecture</strong></summary>
+<summary><strong>Phase 1 — Reference Data Integration</strong></summary>
 
-### Connections Required
-
-| Connection Name | Type | Serves |
-|----------------|------|--------|
-| `CONN_Oracle_Banking_DB` | Oracle | `SRC_*` source tables + `TGT_*` target tables |
-| `CONN_FF_ATM_Transactions` | Flat File | `ATM_Txn_*.csv` (pattern-matched) |
-| `CONN_FF_CC_Spend` | Flat File | `CC_Spend_*.csv` (pattern-matched) |
-
-### MPLT_Cleanse_Customer_Name
-
-A reusable **Mapplet** containing a single Expression transformation:
-
-```
-OUT_CUST_NAME = LTRIM(RTRIM(REG_REPLACE(CUST_NAME, '[^a-zA-Z\s]', '')))
-```
-
-| Input | Output |
-|-------|--------|
-| `' rania hassan kamel'` | `'rania hassan kamel'` |
-| `'Mona Abdelaziz Mahmoud  '` | `'Mona Abdelaziz Mahmoud'` |
-| `'Sami Omar El-Fayed'` | `'Sami Omar ElFayed'` |
-
-</details>
-
-<details>
-<summary><strong>Phase 2 — Staging & Integration</strong></summary>
-
-### Joiner Chain
+### Joiner & Cleansing Chain
 
 ```
 SRC_ACCOUNTS  ──┐
-                 ├── JNR_Accounts_Branches ──┐
-SRC_BRANCHES  ──┘    (on BRANCH_ID)          │
-                                              ├── JNR_Main ──► unified stream
-SRC_CUSTOMERS ────────────────────────────────┘  (on CUST_ID)
+                 ├── JNR_Acct_Branch ──────────┐
+SRC_BRANCHES  ──┘    (Detail)                  │
+                                               ├── JNR_Master_Ref ──► To Final Assembly
+SRC_CUSTOMERS ──► MPLT_Cleanse_Customer_Name ──┘  (Master)
 ```
 
-All flat file sources (ATM x3, CC x3) are unioned into the pipeline alongside the Oracle streams before the join chain.
+The top stream focuses entirely on establishing the core customer dimension. It cleanses the customer names using a reusable mapplet and joins the relational Oracle tables to build a unified reference profile.
 
 </details>
 
 <details>
-<summary><strong>Phase 3 — Exception Matrix (Router)</strong></summary>
+<summary><strong>Phase 2 — ATM Transaction Processing</strong></summary>
 
-> **Rule 2 Design Note:** A debit card limit violation cannot be detected row-by-row.  
-> An **Aggregator** must first group by `CUST_ID` to count DEBIT cards, and that count is joined back before the Router evaluates `DEBIT_CARD_COUNT > 1`.
+### Compliance & Aggregation
 
-| Group | Condition | Hardcoded Reason | Target |
-|-------|-----------|-----------------|--------|
-| `GRP_Missing_PK` | `ISNULL(CUST_ID)` | `'MISSING_PK'` | `TGT_EXCEPTION_LOG` |
-| `GRP_Suspended` | `ACC_STATUS='SUSPENDED'` OR `BLACKLIST_FLAG='Y'` | `'SUSPENDED_ACCOUNT_TXN'` | `TGT_EXCEPTION_LOG` |
-| `GRP_Debit_Limit` | `CUST_TYPE='NORMAL' AND DEBIT_CARD_COUNT > 1` | `'DEBIT_LIMIT_EXCEEDED'` | `TGT_EXCEPTION_LOG` |
-| `Default` | *(all remaining)* | — | Phase 4 → |
+```
+SRC_ATM_Regional ──► LKP_Account_Master ──► LKP_Customer_Compliance ──┐
+                                                                      │
+  ┌───────────────────────────────────────────────────────────────────┘
+  │
+  ▼
+RTR_ATM_Compliance ──► (Clean) ────► EXP_Cast_ATM_Amount ──► AGG_Clean_ATM_Total ──► To JNR_ATM_CC
+  │
+  └──► (Exception) ──► TGT_EXCEPTION_LOG
+```
+
+This stream ingests daily ATM extracts. It performs connected lookups against the master data to verify account status and compliance. The router segregates invalid transactions, while clean records have their amounts safely cast to decimals and are aggregated per customer.
 
 </details>
 
 <details>
-<summary><strong>Phase 4 — Golden Record Aggregation</strong></summary>
+<summary><strong>Phase 3 — Credit Card Processing</strong></summary>
 
-### AGG_Golden_Record — Group By `CUST_ID`
+### Quality Checks & Aggregation
 
-| Output Port | Expression |
-|-------------|-----------|
-| `TOTAL_ATM_AMOUNT` | `SUM(ATM_AMOUNT)` |
-| `Q1_SPEND_TOTAL` | `SUM(Q1_SPEND)` |
-| `Q2_SPEND_TOTAL` | `SUM(Q2_SPEND)` |
-| `Q3_SPEND_TOTAL` | `SUM(Q3_SPEND)` |
-| `Q4_SPEND_TOTAL` | `SUM(Q4_SPEND)` |
-| `TOTAL_CC_SPEND` | `SUM(Q1_SPEND + Q2_SPEND + Q3_SPEND + Q4_SPEND)` |
-
-### EXP_Peak_Quarter — Two-Pass DECODE
-
-```sql
--- Variable port: find the numeric peak
-$$MAX_SPEND = DECODE(TRUE,
-  Q1 >= Q2 AND Q1 >= Q3 AND Q1 >= Q4, Q1,
-  Q2 >= Q3 AND Q2 >= Q4,              Q2,
-  Q3 >= Q4,                           Q3,
-  Q4)
-
--- Output port: resolve the numeric peak to a string label
-PEAK_QUARTER = DECODE($$MAX_SPEND, Q1,'Q1', Q2,'Q2', Q3,'Q3', 'Q4')
+```
+CC_Spend_*.csv ──► RTR_CC_Missing_PK ──► (Clean) ────► EXP_Cast_Spend_Metrics ──► AGG_CC_Spend_All_Years ──► To JNR_ATM_CC
+                      │
+                      └──► (Exception) ──► EXP_Hardcode_Missing_PK ──► TGT_EXCEPTION_LOG
 ```
 
-> **Why two passes?** IICS expressions cannot reference a column *name* as a string output directly.  
-> The two-pass pattern first isolates the numeric maximum, then uses that value as a lookup key  
-> to return the corresponding quarter *label* — the idiomatic IICS solution to this class of problem.
+The credit card stream handles quarterly spend data. It first enforces primary key presence via a router. Exceptional records (NULL or orphan IDs) are hardcoded with a rejection reason and sent to the audit log. Clean records are cast and aggregated across all years.
+
+</details>
+
+<details>
+<summary><strong>Phase 4 — Golden Record Assembly</strong></summary>
+
+### Final Joins & Metrics
+
+```
+AGG_Clean_ATM_Total     ──┐
+                          ├──► JNR_ATM_CC ──┐
+AGG_CC_Spend_All_Years  ──┘                 │
+                                            ├──► JNR_Final_Master ──► EXP_Golden_Metrics ──► TGT_CUSTOMER_360
+JNR_Master_Ref (from P1) ───────────────────┘
+```
+
+The aggregated transaction totals (ATM and CC) are joined together. That unified transaction data is then joined with the cleansed reference profile. The `EXP_Golden_Metrics` calculates the `TOTAL_WALLET` and the string label for the `PEAK_QUARTER` before performing an Upsert to the target database.
 
 </details>
 
@@ -277,14 +253,16 @@ The exception log target (`TGT_EXCEPTION_LOG`) is set to **Insert Only** — rec
 
 ## ⚡ Exception Matrix
 
-| Rule | Icon | Condition | Exception Code | Destination |
-|------|------|-----------|---------------|-------------|
-| **Rule 1** | 🔑 | `CUST_ID IS NULL` in any source file | `MISSING_PK` | `TGT_EXCEPTION_LOG` |
-| **Rule 2** | 💳 | `CUST_TYPE = 'NORMAL'` AND `DEBIT_CARD_COUNT > 1` | `DEBIT_LIMIT_EXCEEDED` | `TGT_EXCEPTION_LOG` |
-| **Rule 3** | 🚫 | `ACC_STATUS = 'SUSPENDED'` OR `BLACKLIST_FLAG = 'Y'` | `SUSPENDED_ACCOUNT_TXN` | `TGT_EXCEPTION_LOG` |
+The exception logic is distributed across the data streams to catch errors as early as possible before aggregation.
 
-> [!WARNING]
-> Rule 2 requires a **pre-Router Aggregator** step. Evaluating this condition directly in the Router against raw rows will produce incorrect results because the debit card count is a cross-row aggregation, not a per-row attribute.
+| Rule | Stream | Router | Exception Code | Target |
+|------|--------|--------|----------------|--------|
+| **Rule 1** | CC Spend | `RTR_CC_Missing_PK` | `MISSING_PK` | `TGT_EXCEPTION_LOG` |
+| **Rule 2** | ATM | `RTR_ATM_Compliance` | `DEBIT_LIMIT_EXCEEDED` | `TGT_EXCEPTION_LOG` |
+| **Rule 3** | ATM | `RTR_ATM_Compliance` | `SUSPENDED_ACCOUNT_TXN` | `TGT_EXCEPTION_LOG` |
+
+> [!NOTE]
+> By separating the exception logic into stream-specific routers (`RTR_ATM_Compliance` and `RTR_CC_Missing_PK`), we avoid unnecessary processing of dirty data. Exceptions are identified immediately after lookups and routed directly to the audit log.
 
 ---
 
